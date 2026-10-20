@@ -1,0 +1,938 @@
+<!DOCTYPE html>  <html lang="id">  
+<head>  
+  <meta charset="UTF-8">  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">  
+  <title>Payment SanzOfficial - Dashboard Pembayaran</title>  
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">  
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">  
+  <style>  
+    * {  
+      margin: 0;  
+      padding: 0;  
+      box-sizing: border-box;  
+    }  :root {  
+  --bg-primary: #0c0c0c;  
+  --bg-secondary: rgba(25, 25, 25, 0.85);  
+  --text-primary: #e0e0e0;  
+  --text-secondary: #9e9e9e;  
+  --accent: #424242;  
+  --accent-glow: #616161;  
+  --card-bg: rgba(30, 30, 30, 0.9);  
+  --border-color: rgba(66, 66, 66, 0.4);  
+  --neon-shadow: 0 0 4px var(--accent-glow);  
+  --transition-default: all 0.3s ease;  
+}  
+
+body.light-mode {  
+  --bg-primary: #f5f5f5;  
+  --bg-secondary: rgba(245, 245, 245, 0.9);  
+  --text-primary: #212121;  
+  --text-secondary: #757575;  
+  --accent: #424242;  
+  --accent-glow: #616161;  
+  --card-bg: rgba(255, 255, 255, 0.95);  
+  --border-color: rgba(66, 66, 66, 0.3);  
+}  
+
+body {  
+  font-family: 'Inter', sans-serif;  
+  background: var(--bg-primary);  
+  color: var(--text-primary);  
+  overflow-x: hidden;  
+  transition: var(--transition-default);  
+}  
+
+/* Background efek */  
+#particles-js {  
+  position: fixed;  
+  width: 100%;  
+  height: 100%;  
+  top: 0;  
+  left: 0;  
+  z-index: -1;  
+}  
+
+.nebula-bg {  
+  position: fixed;  
+  top: 0;  
+  left: 0;  
+  width: 100%;  
+  height: 100%;  
+  background: radial-gradient(circle at 20% 80%, rgba(66, 66, 66, 0.25) 0%, transparent 50%),  
+              radial-gradient(circle at 80% 20%, rgba(97, 97, 97, 0.25) 0%, transparent 50%),  
+              radial-gradient(circle at 40% 40%, rgba(66, 66, 66, 0.15) 0%, transparent 50%);  
+  z-index: -2;  
+  animation: nebula-float 20s ease-in-out infinite;  
+}  
+
+@keyframes nebula-float {  
+  0%, 100% { transform: translate(0, 0) scale(1); }  
+  33% { transform: translate(-20px, -20px) scale(1.05); }  
+  66% { transform: translate(20px, -10px) scale(0.95); }  
+}  
+
+/* Notifikasi modern */  
+.notif {  
+  position: fixed;  
+  top: 20px;  
+  right: 20px;  
+  background: var(--card-bg);  
+  backdrop-filter: blur(16px);  
+  border: 1px solid var(--border-color);  
+  color: var(--text-primary);  
+  padding: 12px 24px;  
+  border-radius: 40px;  
+  font-weight: 700;  
+  font-size: 0.9rem;  
+  z-index: 3000;  
+  transform: translateX(120%);  
+  opacity: 0;  
+  transition: transform 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1), opacity 0.3s ease;  
+  box-shadow: 0 8px 20px rgba(0,0,0,0.2);  
+  letter-spacing: 0.3px;  
+}  
+
+.notif.show {  
+  transform: translateX(0);  
+  opacity: 1;  
+}  
+
+/* Header & Menu */  
+.header-controls {  
+  position: fixed;  
+  top: 20px;  
+  right: 20px;  
+  display: flex;  
+  gap: 15px;  
+  z-index: 1000;  
+}  
+
+.menu-toggle {  
+  background: var(--bg-secondary);  
+  border: 1px solid var(--border-color);  
+  color: var(--text-primary);  
+  width: 48px;  
+  height: 48px;  
+  border-radius: 30px;  
+  cursor: pointer;  
+  display: flex;  
+  flex-direction: column;  
+  align-items: center;  
+  justify-content: center;  
+  gap: 5px;  
+  transition: var(--transition-default);  
+  backdrop-filter: blur(12px);  
+  box-shadow: var(--neon-shadow);  
+}  
+
+.menu-toggle span {  
+  width: 22px;  
+  height: 2.5px;  
+  background: var(--text-primary);  
+  border-radius: 4px;  
+  transition: all 0.25s ease;  
+}  
+
+.menu-toggle.active span:nth-child(1) {  
+  transform: rotate(45deg) translate(5px, 5px);  
+}  
+.menu-toggle.active span:nth-child(2) { opacity: 0; }  
+.menu-toggle.active span:nth-child(3) {  
+  transform: rotate(-45deg) translate(5px, -5px);  
+}  
+
+.dropdown-menu {  
+  position: absolute;  
+  top: 60px;  
+  right: 0;  
+  background: var(--bg-secondary);  
+  backdrop-filter: blur(16px);  
+  border: 1px solid var(--border-color);  
+  border-radius: 20px;  
+  padding: 12px;  
+  display: none;  
+  flex-direction: column;  
+  gap: 10px;  
+  min-width: 200px;  
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);  
+}  
+
+.dropdown-menu.active { display: flex; animation: fadeSlideIn 0.2s ease; }  
+
+@keyframes fadeSlideIn {  
+  from { opacity: 0; transform: translateY(-10px); }  
+  to { opacity: 1; transform: translateY(0); }  
+}  
+
+.dropdown-item {  
+  background: transparent;  
+  border: none;  
+  color: var(--text-primary);  
+  padding: 12px 16px;  
+  border-radius: 14px;  
+  cursor: pointer;  
+  font-weight: 600;  
+  text-align: left;  
+  display: flex;  
+  align-items: center;  
+  gap: 12px;  
+  transition: var(--transition-default);  
+}  
+
+.dropdown-item:hover {  
+  background: var(--accent);  
+  box-shadow: var(--neon-shadow);  
+}  
+
+/* Music Player */  
+.music-player {  
+  position: fixed;  
+  top: 130px;  
+  right: 20px;  
+  background: var(--bg-secondary);  
+  backdrop-filter: blur(20px);  
+  border: 1px solid var(--border-color);  
+  border-radius: 24px;  
+  padding: 20px;  
+  display: none;  
+  z-index: 1001;  
+  min-width: 240px;  
+  box-shadow: 0 15px 35px rgba(0,0,0,0.3);  
+}  
+
+.music-player.active { display: block; animation: fadeSlideIn 0.2s ease; }  
+.song-list { list-style: none; margin-top: 12px; }  
+.song-item {  
+  padding: 12px;  
+  margin: 8px 0;  
+  background: var(--card-bg);  
+  border-radius: 40px;  
+  cursor: pointer;  
+  text-align: center;  
+  font-weight: 600;  
+  transition: all 0.2s;  
+}  
+.song-item:hover {  
+  background: var(--accent);  
+  transform: scale(0.98);  
+}  
+
+/* Container & Halaman */  
+.container {  
+  min-height: 100vh;  
+  display: flex;  
+  flex-direction: column;  
+  justify-content: center;  
+  align-items: center;  
+  padding: 100px 20px 60px;  
+  position: relative;  
+}  
+
+.landing-page, .payment-page, .send-proof-page {  
+  width: 100%;  
+  max-width: 800px;  
+  transition: var(--transition-default);  
+}  
+
+.landing-page { display: block; text-align: center; animation: fadeInUp 0.8s ease; }  
+.payment-page { display: none; animation: fadeInUp 0.5s ease; }  
+.send-proof-page { display: none; animation: fadeInUp 0.5s ease; }  
+
+@keyframes fadeInUp {  
+  from { opacity: 0; transform: translateY(30px); }  
+  to { opacity: 1; transform: translateY(0); }  
+}  
+
+.profile-icon {  
+  width: 140px;  
+  height: 140px;  
+  margin: 0 auto 25px;  
+  border-radius: 50%;  
+  overflow: hidden;  
+  box-shadow: 0 0 0 2px var(--border-color), var(--neon-shadow);  
+  animation: softPulse 2.5s infinite;  
+}  
+
+@keyframes softPulse {  
+  0% { box-shadow: 0 0 0 0 rgba(97,97,97,0.4); }  
+  70% { box-shadow: 0 0 0 12px rgba(97,97,97,0); }  
+  100% { box-shadow: 0 0 0 0 rgba(97,97,97,0); }  
+}  
+
+.profile-icon img { width: 100%; height: 100%; object-fit: cover; }  
+
+h1 {  
+  font-size: 2.8rem;  
+  font-weight: 900;  
+  background: linear-gradient(135deg, #e0e0e0, #9e9e9e);  
+  -webkit-background-clip: text;  
+  background-clip: text;  
+  -webkit-text-fill-color: transparent;  
+  margin-bottom: 15px;  
+}  
+
+.description {  
+  font-size: 1.1rem;  
+  color: var(--text-secondary);  
+  margin-bottom: 35px;  
+  line-height: 1.5;  
+}  
+
+.cta-button, .submit-btn {  
+  background: linear-gradient(135deg, var(--accent), var(--accent-glow));  
+  border: none;  
+  padding: 14px 32px;  
+  font-weight: 800;  
+  border-radius: 60px;  
+  cursor: pointer;  
+  transition: var(--transition-default);  
+  box-shadow: var(--neon-shadow);  
+  color: white;  
+  font-size: 1rem;  
+}  
+
+.cta-button:hover, .submit-btn:hover {  
+  transform: translateY(-3px);  
+  box-shadow: 0 0 18px var(--accent-glow);  
+}  
+
+/* Payment Grid */  
+.payment-grid {  
+  display: grid;  
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));  
+  gap: 25px;  
+  margin: 20px 0 30px;  
+}  
+
+.payment-card {  
+  background: var(--card-bg);  
+  border: 1px solid var(--border-color);  
+  border-radius: 28px;  
+  padding: 24px;  
+  text-align: center;  
+  backdrop-filter: blur(12px);  
+  transition: all 0.25s;  
+}  
+
+.payment-card:hover {  
+  transform: translateY(-6px);  
+  border-color: var(--accent-glow);  
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);  
+}  
+
+.payment-icon {  
+  width: 60px;  
+  height: 60px;  
+  margin: 0 auto 15px;  
+  background: rgba(66,66,66,0.5);  
+  border-radius: 60px;  
+  display: flex;  
+  align-items: center;  
+  justify-content: center;  
+}  
+
+.payment-icon span { font-size: 34px; color: white; }  
+
+.copy-btn {  
+  background: var(--accent);  
+  width: 100%;  
+  padding: 12px;  
+  border-radius: 40px;  
+  font-weight: bold;  
+  margin-top: 12px;  
+  transition: 0.2s;  
+}  
+
+.copy-btn.copied { background: #10b981; }  
+
+/* QRIS */  
+.qris-container {  
+  text-align: center;  
+  margin-top: 25px;  
+}  
+.qris-code {  
+  width: 180px;  
+  height: 180px;  
+  background: white;  
+  margin: 15px auto;  
+  border-radius: 24px;  
+  overflow: hidden;  
+  cursor: pointer;  
+  transition: 0.2s;  
+  box-shadow: var(--neon-shadow);  
+}  
+.qris-code img { width: 100%; height: 100%; object-fit: cover; }  
+
+/* Form Kirim Bukti */  
+.form-group {  
+  margin-bottom: 24px;  
+}  
+.form-group label {  
+  display: block;  
+  margin-bottom: 8px;  
+  font-weight: 700;  
+}  
+.form-group input, .form-group textarea {  
+  width: 100%;  
+  padding: 14px 18px;  
+  background: var(--card-bg);  
+  border: 1px solid var(--border-color);  
+  border-radius: 28px;  
+  color: var(--text-primary);  
+  font-size: 1rem;  
+  transition: 0.2s;  
+}  
+.form-group input:focus, .form-group textarea:focus {  
+  outline: none;  
+  border-color: var(--accent-glow);  
+  box-shadow: var(--neon-shadow);  
+}  
+.file-upload {  
+  position: relative;  
+  width: 100%;  
+  cursor: pointer;  
+}  
+.file-upload input[type="file"] {  
+  position: absolute;  
+  opacity: 0;  
+  width: 100%;  
+  height: 100%;  
+  cursor: pointer;  
+}  
+.file-upload-label {  
+  display: flex;  
+  flex-direction: column;  
+  align-items: center;  
+  gap: 8px;  
+  padding: 25px;  
+  border: 2px dashed var(--border-color);  
+  border-radius: 32px;  
+  background: var(--card-bg);  
+  transition: 0.2s;  
+  cursor: pointer;  
+}  
+.preview-image {  
+  max-width: 150px;  
+  max-height: 150px;  
+  border-radius: 20px;  
+  margin-top: 15px;  
+  box-shadow: var(--neon-shadow);  
+}  
+
+/* Modal */  
+.modal {  
+  display: none;  
+  position: fixed;  
+  inset: 0;  
+  background: rgba(0,0,0,0.8);  
+  backdrop-filter: blur(8px);  
+  z-index: 2000;  
+  justify-content: center;  
+  align-items: center;  
+}  
+.modal.active { display: flex; }  
+.modal-content {  
+  background: #1f1f2f;  
+  padding: 25px;  
+  border-radius: 40px;  
+  text-align: center;  
+  max-width: 90vw;  
+}  
+.enlarged-qris {  
+  width: 280px;  
+  height: 280px;  
+  margin: 15px auto;  
+  background: white;  
+  border-radius: 24px;  
+  overflow: hidden;  
+}  
+.enlarged-qris img {  
+  width: 100%;  
+  height: 100%;  
+  object-fit: contain;  
+}  
+.modal-close {  
+  font-size: 32px;  
+  cursor: pointer;  
+  float: right;  
+  color: #aaa;  
+}  
+
+/* responsif */  
+@media (max-width: 640px) {  
+  .container { padding: 80px 16px 40px; }  
+  h1 { font-size: 2rem; }  
+}
+
+  </style>  
+</head>  
+<body>  
+  <div id="particles-js"></div>  
+  <div class="nebula-bg"></div>    <div class="notif" id="notif"></div>    <!-- Header Controls -->    <div class="header-controls">  
+    <button class="menu-toggle" id="menuToggle">  
+      <span></span><span></span><span></span>  
+    </button>  
+    <div class="dropdown-menu" id="dropdownMenu">  
+      <button class="dropdown-item" id="backBtn" style="display: none;" onclick="navigateTo('landing')">  
+        <span class="material-symbols-outlined">arrow_back</span> Kembali  
+      </button>  
+      <button class="dropdown-item" onclick="navigateTo('sendProof')">  
+        <span class="material-symbols-outlined">upload</span> Kirim Bukti TF  
+      </button>  
+      <button class="dropdown-item" onclick="toggleTheme()">  
+        <span class="material-symbols-outlined">brightness_6</span> Toggle Theme  
+      </button>  
+      <button class="dropdown-item" onclick="toggleMusicPlayer()">  
+        <span class="material-symbols-outlined">music_note</span> Music Player  
+      </button>  
+    </div>  
+  </div>    <!-- Music Player -->    <div class="music-player" id="musicPlayer">  
+    <h3 style="margin-bottom: 10px;">🎧 Suasana</h3>  
+    <ul class="song-list">  
+      <li class="song-item" onclick="playMusic('on my way')">🎵 on my way</li>  
+      <li class="song-item" onclick="playMusic('The One That Got Away')">🎵 The One That Got Away</li>  
+      <li class="song-item" onclick="playMusic('memoriberkasih')">🎵 memori berkasih</li>  
+      <li class="song-item" onclick="stopMusic()">🔇 Stop Music</li>  
+    </ul>  
+  </div>    <div class="container">  
+    <!-- LANDING PAGE -->  
+    <div class="landing-page" id="landingPage">  
+      <div class="profile-icon">  
+        <img src="https://epsteinfiles.zelind4t.workers.dev/uploads/834475.jpg" alt="SanzOfficial-ID">  
+      </div>  
+      <h1>SanzOfficial-ID</h1>  
+      <p class="description">  
+        Selamat datang di payment SanzOfficial. Ini adalah payment SanzOfficial, anda tidak ribet lagi jika owner offline. <br>   
+        Langsung transfer dan kirim bukti lewat website ini. Terimakasih.  
+      </p>  
+      <button class="cta-button" onclick="navigateTo('payment')">Lanjut ke Payment</button>  
+    </div>  <!-- PAYMENT PAGE -->  
+<div class="payment-page" id="paymentPage">  
+  <div class="payment-header" style="text-align:center; margin-bottom: 20px;">  
+    <h1>Payment SanzOfficial</h1>  
+    <p>Pilih metode pembayaran favorit Anda</p>  
+  </div>  
+  <div class="payment-grid">  
+    <!-- Dana -->  
+    <div class="payment-card">  
+      <div class="payment-icon"><span class="material-symbols-outlined">account_balance_wallet</span></div>  
+      <div class="payment-name" style="font-weight: 800;">DANA</div>  
+      <div class="payment-number">085778591477</div>  
+      <div class="payment-owner">A/n SanzxOfficial</div>  
+      <button class="copy-btn" onclick="copyToClipboard('085778591477', this)">Salin Nomor</button>  
+    </div>  
+    <!-- Gopay -->  
+    <div class="payment-card">  
+      <div class="payment-icon"><span class="material-symbols-outlined">payments</span></div>  
+      <div class="payment-name" style="font-weight: 800;">GOPAY</div>  
+      <div class="payment-number">085778591477</div>  
+      <div class="payment-owner">A/n SanzxOfficial</div>  
+      <button class="copy-btn" onclick="copyToClipboard('085778591477', this)">Salin Nomor</button>  
+    </div>  
+  </div>  
+
+  <div class="qris-container">  
+    <h2>QRIS</h2>  
+    <div class="qris-code" onclick="enlargeQRIS()">  
+      <img src="https://epsteinfiles.zelind4t.workers.dev/uploads/dc5358.jpg" alt="QRIS">  
+    </div>  
+    <div class="qris-actions" style="display: flex; gap: 12px; justify-content: center;">  
+      <button class="copy-btn" style="width: auto; padding: 8px 24px;" onclick="downloadQRIS()">Download QRIS</button>  
+      <button class="copy-btn" style="width: auto; padding: 8px 24px;" onclick="enlargeQRIS()">Perbesar</button>  
+    </div>  
+  </div>  
+<div style="margin-top: 30px; text-align: center; display:flex; gap:15px; justify-content:center; flex-wrap:wrap;">
+
+  <a href="https://wa.me/6285778591477" target="_blank">
+    <button class="cta-button" style="background:#25D366;">
+      💬 WhatsApp
+    </button>
+  </a>
+
+  <button class="cta-button" onclick="navigateTo('sendProof')" style="background: #616161;">
+    📸 Kirim Bukti Transfer
+  </button>
+
+  <a href="https://t.me/Sanzxyzbca" target="_blank">
+    <button class="cta-button" style="background:#229ED9;">
+      ✈️ Telegram
+    </button>
+  </a>
+
+  <button class="cta-button" onclick="openProductModal()" style="background: #424242;">
+    🛍️ All Product
+  </button>
+
+
+  </div>
+</div>
+
+<!-- SEND PROOF PAGE -->
+<div class="send-proof-page" id="sendProofPage">
+
+
+  <form id="proofForm">  
+    <div class="form-group">  
+      <label for="nama">Nama Lengkap</label>  
+      <input type="text" id="nama" name="nama" required placeholder="Masukkan nama lengkap">  
+    </div>  
+    <div class="form-group">  
+      <label for="produk">Produk / Deskripsi</label>  
+      <input type="text" id="produk" name="produk" required placeholder="Contoh: Donasi, Top Up, Jasa">  
+    </div>  
+    <div class="form-group">  
+      <label for="harga">Jumlah Transfer (Rp)</label>  
+      <input type="number" id="harga" name="harga" required placeholder="cth: 50000">  
+    </div>  
+    <div class="form-group">  
+      <label for="bukti">Foto Bukti Transfer</label>  
+      <div class="file-upload">  
+        <input type="file" id="bukti" name="bukti" accept="image/*" required onchange="previewImage(event)">  
+        <div class="file-upload-label">  
+          <span class="material-symbols-outlined" style="font-size: 44px;">cloud_upload</span>  
+          <p>Klik atau seret untuk upload</p>  
+        </div>  
+      </div>  
+      <div id="imagePreview" style="display: flex; justify-content: center;"></div>  
+    </div>  
+    <button type="submit" class="submit-btn" id="submitBtn">  
+      <span class="material-symbols-outlined">send</span> Kirim ke Admin  
+    </button>  
+  </form>  
+</div>
+
+  </div>    <!-- QRIS Modal -->    <div class="modal" id="qrisModal">  
+    <div class="modal-content">  
+      <span class="modal-close" onclick="closeModal()">&times;</span>  
+      <h3 style="color:white;">QRIS Scan</h3>  
+      <div class="enlarged-qris">  
+        <img src="https://www.upload.ee/image/19874902/file.jpg" alt="QRIS Full">  
+      </div>  
+      <button class="copy-btn" style="margin-top: 15px;" onclick="downloadQRIS()">Download QRIS</button>  
+    </div>  
+  </div>  <audio id="backgroundMusic" loop></audio>
+
+  <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>    <script>  
+    // =============== TELEGRAM CONFIG (GANTI SESUAI PUNYA ANDA) ==========  
+    const TELEGRAM_BOT_TOKEN = '8975823167:AAE6wDD1zhi4IigQrtR_mckww5x7-TBff5Y';  
+    const TELEGRAM_CHAT_ID = '7704443606';  
+  
+    // DOM Elements  
+    const landingDiv = document.getElementById('landingPage');  
+    const paymentDiv = document.getElementById('paymentPage');  
+    const sendProofDiv = document.getElementById('sendProofPage');  
+    const backBtn = document.getElementById('backBtn');  
+    const menuToggle = document.getElementById('menuToggle');  
+    const dropdownMenu = document.getElementById('dropdownMenu');  
+    const notifDiv = document.getElementById('notif');  
+  
+    // Helper Notif  
+    function showNotif(msg, isError = false) {  
+      notifDiv.textContent = msg;  
+      notifDiv.classList.add('show');  
+      setTimeout(() => notifDiv.classList.remove('show'), 3000);  
+    }  
+  
+    // Navigasi Utama (fix tampilan dashboard kirim bukti)  
+    window.navigateTo = function(page) {  
+      // Sembunyikan semua  
+      landingDiv.style.display = 'none';  
+      paymentDiv.classList.remove('active');  
+      paymentDiv.style.display = 'none';  
+      sendProofDiv.classList.remove('active');  
+      sendProofDiv.style.display = 'none';  
+        
+      if (page === 'landing') {  
+        landingDiv.style.display = 'block';  
+        backBtn.style.display = 'none';  
+        showNotif('🏠 Kembali ke beranda');  
+      }   
+      else if (page === 'payment') {  
+        paymentDiv.style.display = 'block';  
+        paymentDiv.classList.add('active');  
+        backBtn.style.display = 'flex';  
+        showNotif('💳 Halaman pembayaran');  
+      }   
+      else if (page === 'sendProof') {  
+        sendProofDiv.style.display = 'block';  
+        sendProofDiv.classList.add('active');  
+        backBtn.style.display = 'flex';  
+        showNotif('📤 Form bukti transfer siap');  
+      }  
+        
+      // Tutup menu mobile setelah klik  
+      menuToggle.classList.remove('active');  
+      dropdownMenu.classList.remove('active');  
+    };  
+  
+    // Kembali dari menu  
+    window.showLandingPage = () => navigateTo('landing');  
+    window.showPaymentPage = () => navigateTo('payment');  
+    window.showSendProofPage = () => navigateTo('sendProof');  
+  
+    // Copy to clipboard  
+    window.copyToClipboard = function(text, btn) {  
+  try {  
+    const textarea = document.createElement('textarea');  
+    textarea.value = text;  
+    document.body.appendChild(textarea);  
+    textarea.select();  
+    document.execCommand('copy');  
+    document.body.removeChild(textarea);  
+  
+    const originalText = btn.innerText;  
+    btn.innerText = '✓ Tersalin!';  
+    btn.classList.add('copied');  
+  
+    showNotif(`Nomor ${text} disalin`);  
+  
+    setTimeout(() => {  
+      btn.innerText = originalText;  
+      btn.classList.remove('copied');  
+    }, 2000);  
+  
+  } catch (err) {  
+    showNotif('❌ Gagal menyalin');  
+    console.error(err);  
+  }  
+};  
+  
+    // Menu Toggle & close diluar  
+    function toggleMenuPanel() {  
+      menuToggle.classList.toggle('active');  
+      dropdownMenu.classList.toggle('active');  
+    }  
+    menuToggle.onclick = (e) => { e.stopPropagation(); toggleMenuPanel(); };  
+    document.addEventListener('click', function(e) {  
+      if (!menuToggle.contains(e.target) && !dropdownMenu.contains(e.target)) {  
+        menuToggle.classList.remove('active');  
+        dropdownMenu.classList.remove('active');  
+      }  
+      const musicPlayerDiv = document.getElementById('musicPlayer');  
+      if (musicPlayerDiv && !musicPlayerDiv.contains(e.target) && !e.target.closest('.dropdown-item[onclick*="toggleMusicPlayer"]')) {  
+        musicPlayerDiv.classList.remove('active');  
+      }  
+    });  
+  
+    // Theme Toggle  
+    window.toggleTheme = function() {  
+      document.body.classList.toggle('light-mode');  
+      showNotif(document.body.classList.contains('light-mode') ? '☀️ Mode Terang' : '🌙 Mode Gelap');  
+    };  
+  
+    // Music Player logic  
+    window.toggleMusicPlayer = function() {  
+      document.getElementById('musicPlayer').classList.toggle('active');  
+    };  
+    
+function getAudioSrc(type) {
+  const songs = {
+    'on my way': 'https://kappa.lol/AWG5SJ',
+    'The One That Got Away': 'https://kappa.lol/yGkERL',
+    'memoriberkasih': 'https://c.termai.cc/a173/Hg4.mp3'
+  };
+
+  return songs[type] || '';
+}
+
+    window.playMusic = function(type) {  
+      const audio = document.getElementById('backgroundMusic');  
+      audio.src = getAudioSrc(type);  
+      audio.play().catch(e => console.log);  
+      showNotif('🎵 Musik dimainkan');  
+      document.getElementById('musicPlayer').classList.remove('active');  
+    };  
+    window.stopMusic = function() {  
+      const audio = document.getElementById('backgroundMusic');  
+      audio.pause();  
+      audio.currentTime = 0;  
+      showNotif('⏹️ Musik berhenti');  
+      document.getElementById('musicPlayer').classList.remove('active');  
+    };  
+  
+    // QRIS  
+    window.enlargeQRIS = function() {  
+      document.getElementById('qrisModal').classList.add('active');  
+    };  
+    window.closeModal = function() {  
+      document.getElementById('qrisModal').classList.remove('active');  
+    };  
+    window.downloadQRIS = function() {
+  const link = document.createElement('a');
+  link.href = "https://www.upload.ee/image/19874902/file.jpg";
+  link.download = "QRIS_SanzOfficial.jpg";
+
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+
+  showNotif('✅ QRIS berhasil didownload');
+};
+  
+    // Preview Image  
+    
+window.previewImage = function(event) {
+  const file = event.target.files[0];
+  const previewDiv = document.getElementById('imagePreview');
+
+  previewDiv.innerHTML = '';
+
+  if (!file) return;
+
+  if (!file.type.startsWith('image/')) {
+    showNotif('❌ Pilih file gambar yang valid');
+    event.target.value = '';
+    return;
+  }
+
+  const reader = new FileReader();
+
+  reader.onload = function(e) {
+    const img = document.createElement('img');
+    img.src = e.target.result;
+    img.className = 'preview-image';
+    img.alt = 'Preview Bukti Transfer';
+    previewDiv.appendChild(img);
+  };
+
+  reader.onerror = function() {
+    showNotif('❌ Foto gagal dibaca');
+  };
+
+  reader.readAsDataURL(file);
+};
+  
+    // Submit to Telegram (SUDAH FIX DENGAN FORM YANG TAMPIL)  
+    window.submitProof = async function(event) {  
+      event.preventDefault();  
+      const submitBtn = document.getElementById('submitBtn');  
+      const nama = document.getElementById('nama').value.trim();  
+      const produk = document.getElementById('produk').value.trim();  
+      const harga = document.getElementById('harga').value.trim();  
+      const fileInput = document.getElementById('bukti');  
+      const file = fileInput.files[0];  
+  
+      if (!nama || !produk || !harga || !file) {  
+        showNotif('❌ Harap isi semua data dan upload bukti!');  
+        return;  
+      }  
+  
+      submitBtn.disabled = true;  
+      submitBtn.innerHTML = '<span class="material-symbols-outlined">hourglass_empty</span> Mengirim ...';  
+  
+      try {  
+        const textMsg = `📋 *BUKTI TRANSFER BARU* 📋\n\n👤 *Nama:* ${nama}\n📦 *Produk:* ${produk}\n💰 *Jumlah:* Rp ${parseInt(harga).toLocaleString()}\n📅 *Tanggal:* ${new Date().toLocaleString('id-ID')}`;  
+        const textResponse = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {  
+          method: 'POST',  
+          headers: { 'Content-Type': 'application/json' },  
+          body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, text: textMsg, parse_mode: 'Markdown' })  
+        });  
+        if (!textResponse.ok) throw new Error('Gagal kirim teks');  
+  
+        if (file) {  
+          const formPhoto = new FormData();  
+          formPhoto.append('chat_id', TELEGRAM_CHAT_ID);  
+          formPhoto.append('photo', file);  
+          formPhoto.append('caption', `📸 Bukti transfer dari ${nama} - Rp ${harga}`);  
+          const photoRes = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendPhoto`, {  
+            method: 'POST',  
+            body: formPhoto  
+          });  
+          if (!photoRes.ok) throw new Error('Gagal upload foto');  
+        }  
+  
+        showNotif('✅ Bukti terkirim ke admin, terimakasih!');  
+        document.getElementById('proofForm').reset();  
+        document.getElementById('imagePreview').innerHTML = '';  
+        setTimeout(() => navigateTo('payment'), 2000);  
+      } catch (err) {  
+        console.error(err);  
+        showNotif('❌ Gagal mengirim bukti, coba lagi nanti');  
+      } finally {  
+        submitBtn.disabled = false;  
+        submitBtn.innerHTML = '<span class="material-symbols-outlined">send</span> Kirim ke Admin';  
+      }  
+    };  
+  
+    // Attach form listener  
+    const formElem = document.getElementById('proofForm');  
+    if (formElem) formElem.addEventListener('submit', window.submitProof);  
+  
+    // Init particlesJS  
+    if (typeof particlesJS !== 'undefined') {  
+      particlesJS('particles-js', {  
+        particles: {  
+          number: { value: 70, density: { enable: true, value_area: 800 } },  
+          color: { value: '#9e9e9e' },  
+          shape: { type: 'circle' },  
+          opacity: { value: 0.4, random: true },  
+          size: { value: 2.5, random: true },  
+          line_linked: { enable: true, distance: 150, color: '#9e9e9e', opacity: 0.2, width: 1 },  
+          move: { enable: true, speed: 1.5, direction: 'none', random: true, straight: false, out_mode: 'out' }  
+        }  
+      });  
+    }  
+  
+    // Set initial state  
+    landingDiv.style.display = 'block';  
+    paymentDiv.style.display = 'none';  
+    sendProofDiv.style.display = 'none';  
+    backBtn.style.display = 'none';  
+    // Product Modal
+window.openProductModal = function() {
+  document.getElementById('productModal').classList.add('active');
+}
+
+window.closeProductModal = function() {
+  document.getElementById('productModal').classList.remove('active');
+}
+  </script> 
+  <!-- PRODUCT MODAL -->
+<div class="modal" id="productModal">
+  <div class="modal-content" style="max-width:600px; width:90%;">
+    <span class="modal-close" onclick="closeProductModal()">&times;</span>
+
+    <h2 style="margin-bottom:20px; color:white;">🛒 All Product</h2>
+
+    <div style="display:grid; gap:15px; text-align:left;">
+
+      <div class="payment-card">
+        <h3>📦 PANEL PTERODACTYL ILEGAL</h3>
+        <p>• RAM 1GB - Rp1.000</p>
+        <p>• RAM 2GB - Rp2.000</p>
+        <p>• RAM 3GB - Rp3.000</p>
+        <p>• UNLIMITED - Rp5.000</p>
+      </div>
+
+      <div class="payment-card">
+        <h3>🤖 JASA BOT WA</h3>
+        <p>• Fix Error Bot</p>
+        <p>• Rename Script</p>
+        <p>• Add Feature</p>
+        <p>• Bikin Sc Bug Wa</p>
+      </div>
+
+      <div class="payment-card">
+        <h3>🦠 SCRIPT BUG WA</h3>
+        <p>• Sc Kiluax - 25K</p>
+        <p>• Sc Lelocuh - 15K</p>
+        <p>• Sc Vedzdragon 25K</p>
+        <p>• Sc Virgiliant 15K</p>
+        <p> Sc Freya (telegram)</p>
+      </div>
+
+  <div class="payment-card">
+        <h3>📦 PANEL PTERODACTYL LEGAL</h3>
+        <p>• RAM 1GB - Rp1.000</p>
+        <p>• RAM 2GB - Rp2.000</p>
+        <p>• RAM 3GB - Rp3.000</p>
+        <p>• UNLIMITED - Rp10.000</p>
+      </div>
+      
+      <div class="payment-card">
+      <h2>YANG ENGGA ADA HARGA BISA TANYA OWNER YA  ATAU OERDER ALL TITLE SC BUG, APK BUG DLL <h2>
+    </div>
+  </div>
+</div>
+   </body>  
+</html>  
